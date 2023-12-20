@@ -4,35 +4,17 @@ import threadsData from "../data";
 import TopBar from "../components/TopBar";
 import SearchBar from "../components/SearchBar";
 import ThreadCard from "../components/ThreadCard";
+import { singleThread } from "../App";
 
-export interface Thread {
-  title: string;
-  details: string;
-  category: string;
-  id: number;
-  likes: number;
-  commentNum: number;
+interface MainpageProps {
+  threads: singleThread[];
+  handleDelete: Function;
 }
 
-const MainPage = () => {
-  const [threads, setThreads] = useState<Thread[]>([]);
-
-  useEffect(() => {
-    setThreads(threadsData);
-  }, []);
-
-  const handleDelete = (id: number) => {
-    const newThreads = threads.filter((thread) => thread.id != id);
-    setThreads(newThreads);
-  };
-
+const MainPage: React.FC<MainpageProps> = ({ threads, handleDelete }) => {
   return (
-    <>
-      <TopBar />
-      <div style={{ marginTop: "20px" }}>
-        <SearchBar />
-      </div>
-      <Container style={{ marginTop: "10px" }}>
+    <div style={{ marginTop: "100px" }}>
+      <Container style={{ marginTop: "20px" }}>
         {threads.map((thread) => (
           <ThreadCard
             key={thread.id}
@@ -41,7 +23,7 @@ const MainPage = () => {
           />
         ))}
       </Container>
-    </>
+    </div>
   );
 };
 export default MainPage;

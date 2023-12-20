@@ -16,17 +16,18 @@ const SearchBar = () => {
   return (
     <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
       <TextField
-        id="search-bar"
-        className="text"
         variant="outlined"
         placeholder="Search..."
         size="small"
-        style={{ width: "300px" }}
+        style={{
+          width: "300px",
+        }}
+        InputProps={{ style: { backgroundColor: "white" } }}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
       <IconButton type="submit" aria-label="search">
-        <SearchIcon style={{ fill: "blue" }} />
+        <SearchIcon style={{ fill: "white" }} />
       </IconButton>
     </form>
   );
