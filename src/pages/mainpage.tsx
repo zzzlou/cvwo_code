@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Container, Box, Grid } from "@mui/material";
-import threadsData from "../data";
 import TopBar from "../components/TopBar";
 import SearchBar from "../components/SearchBar";
 import ThreadCard from "../components/ThreadCard";

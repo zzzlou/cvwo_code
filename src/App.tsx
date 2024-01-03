@@ -19,8 +19,8 @@ export interface singleComment {
   content: string;
   id: number;
   likes: number;
-  userName: string;
-  time: string;
+  name: string;
+  created_at: string;
 }
 export interface singleThread {
   title: string;
@@ -28,52 +28,36 @@ export interface singleThread {
   category: string;
   id: number;
   likes: number;
-  commentNum: number;
-  userName: string;
-  time: string;
+  comment_num: number;
+  name: string;
+  created_at: string;
   comments: singleComment[];
 }
 
 const App = () => {
-  const [threads, setThreads] = useState<singleThread[]>(threadsData);
+  const [threads, setThreads] = useState<singleThread[]>([]);
+  const [threadTrigger, setThreadTrigger] = useState(0); //a trigger to ensure threads sync with backend every time it's created or deleted
+  useEffect(() => {
+    fetch("http://127.0.0.1:3000/api/v1/posts/")
+      .then((res) => res.json())
+      .then((data) => setThreads(data));
+  }, [threadTrigger]);
 
-  const handleDelete = (id: number) => {
-    const newThreads = threads.filter((thread) => thread.id != id);
-    setThreads(newThreads);
-  };
+  const handleDelete = (postId: number) => {
+    const deleteURL = `http://127.0.0.1:3000/api/v1/posts/${postId}`;
 
-  const handleComment = (
-    e: FormEvent,
-    targetThread: singleThread,
-    newCommentContent: string
-  ) => {
-    e.preventDefault();
-    let lastID = threads
-      .map((thread) =>
-        thread.id === targetThread.id
-          ? thread.comments.length > 0
-            ? thread.comments[thread.comments.length - 1].id
-            : 1
-          : null
-      )
-      .filter((id): id is number => id !== null)[0];
-    let newComment: singleComment = {
-      content: newCommentContent,
-      id: lastID + 1,
-      likes: 0,
-      userName: "NewUser",
-      time: "2023.12.21",
-    };
-    const updatedThreads = threads.map((thread) =>
-      thread.id === targetThread.id
-        ? {
-            ...thread,
-            comments: [...thread.comments, newComment],
-            commentNum: thread.comments.length + 1,
-          }
-        : thread
-    );
-    setThreads(updatedThreads);
+    fetch(deleteURL, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          setThreadTrigger((n: number) => n + 1); // Increment threadTrigger to refetch threads
+        } else {
+          throw new Error("Failed to delete comment");
+        }
+      })
+      .catch((error) => console.error("Error deleting comment", error));
   };
 
   return (
@@ -89,9 +73,7 @@ const App = () => {
             <Route
               key={thread.id}
               path={`/comments/${thread.id}`}
-              element={
-                <CommentPage thread={thread} handleComment={handleComment} />
-              }
+              element={<CommentPage thread={thread} />}
             />
           ))}
         </Routes>

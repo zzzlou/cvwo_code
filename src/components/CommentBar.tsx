@@ -18,7 +18,7 @@ const CommentBar: React.FC<{
 }> = ({ thread, handleComment }) => {
   const [comment, setComment] = useState("");
   const ultimateHandleComment = (e: FormEvent) => {
-    handleComment(e, thread, comment);
+    handleComment(e, comment);
     setComment("");
   };
 
@@ -33,6 +33,7 @@ const CommentBar: React.FC<{
           variant="outlined"
           placeholder="Add a new comment"
           multiline
+          value={comment}
           onChange={(e) => setComment(e.target.value)}
           sx={{
             display: "flex",

@@ -94,7 +94,7 @@ const ThreadCard: React.FC<{
   //and this module could be also used for liking/disliking comments
   return (
     <div className={classes.div}>
-      <Card variant="outlined" className={classes.card} elevation={1}>
+      <Card variant="outlined" className={classes.card}>
         <CardHeader
           className={classes.header}
           title={thread.title}
@@ -121,7 +121,7 @@ const ThreadCard: React.FC<{
           </IconButton>
           <IconButton component={Link} to={`/comments/${thread.id}`}>
             <CommentIcon />
-            {thread.commentNum}
+            {thread.comment_num}
           </IconButton>
           <IconButton
             onClick={() => handleDelete(thread.id)}
