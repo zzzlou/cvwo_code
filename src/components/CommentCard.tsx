@@ -13,8 +13,12 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useEffect, useState } from "react";
 import { useLikeDislike } from "./ThreadCard";
 import { convertTime } from "./DetailedThreadCard";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const CommentCard: React.FC<{ comment: singleComment }> = ({ comment }) => {
+const CommentCard: React.FC<{
+  comment: singleComment;
+  handleDeleteComment: Function;
+}> = ({ comment, handleDeleteComment }) => {
   const { likes, likeStatus, handleLike, handleDisLike } = useLikeDislike(
     comment.likes,
     0
@@ -41,6 +45,12 @@ const CommentCard: React.FC<{ comment: singleComment }> = ({ comment }) => {
           <ThumbDownIcon
             style={{ fill: likeStatus === -1 ? "coral" : "grey" }}
           />
+        </IconButton>
+        <IconButton
+          onClick={() => handleDeleteComment(comment.id)}
+          style={{ marginLeft: "auto" }}
+        >
+          <DeleteIcon />
         </IconButton>
       </CardActions>
     </Card>

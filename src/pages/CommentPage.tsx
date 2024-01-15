@@ -13,7 +13,7 @@ const CommentPage: React.FC<{
   thread: singleThread;
 }> = ({ thread }) => {
   const [comments, setComments] = useState<singleComment[]>([]);
-  const [updateTrigger, setUpdateTrigger] = useState(0); //this is a trigger to ensure comment list is updated every time a new comment is posted
+  const [commentTrigger, setCommentTrigger] = useState(0); //this is a trigger to ensure comment list is updated every time a new comment is posted
 
   let api = `http://127.0.0.1:3000/api/v1/posts/${thread.id}/comments`;
 
@@ -22,13 +22,13 @@ const CommentPage: React.FC<{
       .then((res) => res.json())
       .then((data) => setComments(data))
       .catch((error) => console.error("Error fetching comments", error));
-  }, [thread.id, updateTrigger]);
+  }, [thread.id, commentTrigger]);
 
   const handleComment = (e: FormEvent, newCommentContent: string) => {
     e.preventDefault();
     const url = `http://127.0.0.1:3000/api/v1/posts/${thread.id}/comments/`;
     const commentData = {
-      name: "test",
+      name: "admin",
       content: newCommentContent,
       likes: 0,
     };
@@ -39,20 +39,42 @@ const CommentPage: React.FC<{
     })
       .then((response) => {
         if (response.ok) {
-          setUpdateTrigger((n: number) => n + 1); // Increment updateTrigger to refetch comments
+          setCommentTrigger((n: number) => n + 1); // Increment updateTrigger to refetch comments
         } else {
           throw new Error("Failed to post comment");
         }
       })
       .catch((error) => console.error("Error posting comment", error));
   };
+
+  const handleDeleteComment = (commentId: number) => {
+    const deleteURL = `http://127.0.0.1:3000/api/v1/posts/${thread.id}/comments/${commentId}`;
+
+    fetch(deleteURL, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          setCommentTrigger((n: number) => n + 1); // Increment threadTrigger to refetch threads
+        } else {
+          throw new Error("Failed to delete comment");
+        }
+      })
+      .catch((error) => console.error("Error deleting comment", error));
+  };
+
   return (
     <Container style={{ marginTop: "100px", width: "50%" }}>
       <DetailedThreadCard thread={thread} />
       <CommentBar thread={thread} handleComment={handleComment} />
 
       {comments.map((comment) => (
-        <CommentCard key={comment.id} comment={comment} />
+        <CommentCard
+          key={comment.id}
+          comment={comment}
+          handleDeleteComment={handleDeleteComment}
+        />
       ))}
     </Container>
   );

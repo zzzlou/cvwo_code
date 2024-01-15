@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchBar from "./SearchBar";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Link } from "react-router-dom";
 function TopBar() {
   return (
     <AppBar position="fixed">
@@ -18,18 +19,12 @@ function TopBar() {
           alignItems: "center",
         }}
       >
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          My Forum
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            My Forum
+          </Link>
         </Typography>
+
         <div
           style={{
             display: "flex",

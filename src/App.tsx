@@ -60,14 +60,46 @@ const App = () => {
       .catch((error) => console.error("Error deleting comment", error));
   };
 
+  const handleCreate = (title: string, details: string) => {
+    const createURL = `http://127.0.0.1:3000/api/v1/posts/`;
+
+    const postData = {
+      title: title,
+      details: details,
+      name: "admin",
+      category: "cat",
+      likes: 0,
+    };
+
+    fetch(createURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setThreadTrigger((n: number) => n + 1);
+        } else {
+          throw new Error("Failed to post thread");
+        }
+      })
+      .catch((error) => console.error("Error posting thread", error));
+  };
+
   return (
     <>
-      <TopBar />
       <BrowserRouter>
+        <TopBar />
         <Routes>
           <Route
             path="/"
-            element={<MainPage threads={threads} handleDelete={handleDelete} />}
+            element={
+              <MainPage
+                threads={threads}
+                handleDelete={handleDelete}
+                handleCreate={handleCreate}
+              />
+            }
           />
           {threads.map((thread) => (
             <Route
