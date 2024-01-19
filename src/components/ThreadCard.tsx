@@ -119,7 +119,7 @@ const ThreadCard: React.FC<{
               style={{ fill: likeStatus === -1 ? "coral" : "grey" }}
             />
           </IconButton>
-          <IconButton component={Link} to={`/comments/${thread.id}`}>
+          <IconButton component={Link} to={`posts/${thread.id}/comments`}>
             <CommentIcon />
             {thread.comment_num}
           </IconButton>

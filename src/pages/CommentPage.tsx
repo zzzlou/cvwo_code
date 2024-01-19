@@ -26,7 +26,7 @@ const CommentPage: React.FC<{
 
   const handleComment = (e: FormEvent, newCommentContent: string) => {
     e.preventDefault();
-    const url = `http://127.0.0.1:3000/api/v1/posts/${thread.id}/comments/`;
+    const url = `/api/v1/posts/${thread.id}/comments/`;
     const commentData = {
       name: "admin",
       content: newCommentContent,
@@ -36,10 +36,14 @@ const CommentPage: React.FC<{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(commentData),
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           setCommentTrigger((n: number) => n + 1); // Increment updateTrigger to refetch comments
+        } else if (response.status === 401) {
+          alert("Access Denied: Please login to comment ");
+          throw new Error("Unauthorized");
         } else {
           throw new Error("Failed to post comment");
         }
@@ -48,15 +52,21 @@ const CommentPage: React.FC<{
   };
 
   const handleDeleteComment = (commentId: number) => {
-    const deleteURL = `http://127.0.0.1:3000/api/v1/posts/${thread.id}/comments/${commentId}`;
+    const deleteURL = `/api/v1/posts/${thread.id}/comments/${commentId}`;
 
     fetch(deleteURL, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           setCommentTrigger((n: number) => n + 1); // Increment threadTrigger to refetch threads
+        } else if (response.status === 401) {
+          alert(
+            "Access Denied: You are not authorized to perform this action. Please login using username 'admin' "
+          );
+          throw new Error("Unauthorized");
         } else {
           throw new Error("Failed to delete comment");
         }

@@ -22,7 +22,7 @@ const DetailedThreadCard: React.FC<{ thread: singleThread }> = ({ thread }) => {
             <span style={{ marginRight: 8, fontWeight: "bold" }}>
               {thread.category}
             </span>
-            - Posted by {thread.name} on {time}
+            - Posted by {thread.username} on {time}
           </Typography>
         }
         titleTypographyProps={{ fontSize: "1.2rem", fontWeight: "bold" }}

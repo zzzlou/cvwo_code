@@ -14,12 +14,13 @@ import TopBar from "./components/TopBar";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Container } from "@mui/material";
 import "./App.css";
+import axios from "axios";
 
 export interface singleComment {
   content: string;
   id: number;
   likes: number;
-  name: string;
+  username: string;
   created_at: string;
 }
 export interface singleThread {
@@ -29,7 +30,7 @@ export interface singleThread {
   id: number;
   likes: number;
   comment_num: number;
-  name: string;
+  username: string;
   created_at: string;
   comments: singleComment[];
 }
@@ -44,24 +45,30 @@ const App = () => {
   }, [threadTrigger]);
 
   const handleDelete = (postId: number) => {
-    const deleteURL = `http://127.0.0.1:3000/api/v1/posts/${postId}`;
+    const deleteURL = `/api/v1/posts/${postId}`;
 
     fetch(deleteURL, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
           setThreadTrigger((n: number) => n + 1); // Increment threadTrigger to refetch threads
+        } else if (response.status === 401) {
+          alert(
+            "Access Denied: You are not authorized to perform this action. Please login using username 'admin' "
+          );
+          throw new Error("Unauthorized");
         } else {
-          throw new Error("Failed to delete comment");
+          throw new Error("Failed to delete thread");
         }
       })
-      .catch((error) => console.error("Error deleting comment", error));
+      .catch((error) => console.error("Error deleting thread", error));
   };
 
   const handleCreate = (title: string, details: string) => {
-    const createURL = `http://127.0.0.1:3000/api/v1/posts/`;
+    const createURL = `api/v1/posts/`;
 
     const postData = {
       title: title,
@@ -75,6 +82,7 @@ const App = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(postData),
+      credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
@@ -104,7 +112,7 @@ const App = () => {
           {threads.map((thread) => (
             <Route
               key={thread.id}
-              path={`/comments/${thread.id}`}
+              path={`posts/${thread.id}/comments`}
               element={<CommentPage thread={thread} />}
             />
           ))}

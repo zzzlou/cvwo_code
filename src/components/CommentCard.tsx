@@ -27,7 +27,7 @@ const CommentCard: React.FC<{
   return (
     <Card variant="outlined" style={{ marginTop: 5 }}>
       <CardHeader
-        title={comment.name}
+        title={comment.username}
         subheader={`Posted on ${time}`}
         titleTypographyProps={{ fontSize: "1.2rem", fontWeight: "bold" }}
         subheaderTypographyProps={{ fontSize: "0.8rem" }}
