@@ -87,6 +87,9 @@ const App = () => {
       .then((response) => {
         if (response.ok) {
           setThreadTrigger((n: number) => n + 1);
+        } else if (response.status === 401) {
+          alert("Access denied: Please login to create a new thread");
+          throw new Error("Unauthorized");
         } else {
           throw new Error("Failed to post thread");
         }

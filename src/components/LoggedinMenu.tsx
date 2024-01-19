@@ -33,7 +33,7 @@ const LoggedinMenu: React.FC<{
           },
         }}
       >
-        Logged in as {loggedInUsername}
+        {loggedInUsername}
       </Button>
       <Menu
         id="demo-positioned-menu"
@@ -42,12 +42,12 @@ const LoggedinMenu: React.FC<{
         open={open}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
+          vertical: "bottom",
+          horizontal: "right",
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
+          vertical: "bottom",
+          horizontal: "right",
         }}
       >
         <MenuItem onClick={handleLogout}>Logout</MenuItem>

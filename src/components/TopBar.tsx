@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, TextField } from "@mui/material";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -16,6 +16,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import CloseIcon from "@mui/icons-material/Close";
 import LoggedinMenu from "./LoggedinMenu";
 const TopBar = () => {
+  const [username, setUsername] = useState(""); //username is for the login process, loggedInUsername is for storing username after successful login
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loggedInUsername, setLoggedInUsername] = useState("");
+  const [open, setOpen] = useState(false); //this is for login form
+  const [signUpOpen, setSignUpOpen] = useState(false);
+  const [signUpUsername, setSignUpUsername] = useState("");
+
   const handleClickLogin = () => {
     setOpen(true);
   };
@@ -23,10 +30,12 @@ const TopBar = () => {
     setOpen(false);
   };
 
-  const [username, setUsername] = useState(""); //username is for the login process, loggedInUsername is for storing username after successful login
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUsername, setLoggedInUsername] = useState("");
-  const [open, setOpen] = useState(false);
+  const handleClickSignUp = () => {
+    setSignUpOpen(true);
+  };
+  const handleCloseSignUp = () => {
+    setSignUpOpen(false);
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +56,9 @@ const TopBar = () => {
             handleClose();
             setUsername("");
           });
+        } else if (response.status === 401) {
+          alert("Username not found");
+          throw new Error("Unauthorized");
         } else {
           throw new Error("Failed to log in");
         }
@@ -77,6 +89,49 @@ const TopBar = () => {
       })
       .catch((error) => console.error("Error logging out", error));
   };
+
+  const handleSignUp = (e: React.FormEvent) => {
+    e.preventDefault();
+    const signUpURL = `/api/v1/users`;
+    const signUpData = {
+      username: signUpUsername,
+    };
+    fetch(signUpURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(signUpData),
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert(`Username ${signUpUsername} has been successfully signed up`);
+        } else {
+          throw new Error("Failed to sign up");
+        }
+      })
+      .catch((error) => console.error("Failed to sign up", error));
+    setSignUpUsername("");
+  };
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      fetch("/api/v1/check-session", { credentials: "include" })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to check login status");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.logged_in) {
+            setIsLoggedIn(true);
+            setLoggedInUsername(data.user.username);
+          }
+        })
+        .catch((error) => console.error("Error checking login status", error));
+    };
+    checkLoginStatus();
+  }, []);
 
   return (
     <>
@@ -111,13 +166,20 @@ const TopBar = () => {
               handleLogout={handleLogout}
             />
           ) : (
-            <Button onClick={handleClickLogin} color="inherit">
-              Login
-            </Button>
+            <>
+              <Button onClick={handleClickSignUp} color="inherit">
+                Sign up
+              </Button>
+              <Button onClick={handleClickLogin} color="inherit">
+                Login
+              </Button>
+            </>
           )}
         </Toolbar>
       </AppBar>
+
       <Dialog
+        id="login form"
         open={open}
         sx={{
           "& .MuiDialog-paper": {
@@ -162,6 +224,57 @@ const TopBar = () => {
             </IconButton>
             <Button style={{ marginLeft: "auto" }} type="submit">
               Log in
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        id="sign up form"
+        open={signUpOpen}
+        sx={{
+          "& .MuiDialog-paper": {
+            height: "17%",
+            width: "40%",
+            maxWidth: "600px",
+          },
+        }}
+        onClose={(event, reason) => {
+          if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+            handleCloseSignUp();
+          }
+        }}
+      >
+        <DialogContent>
+          <form
+            onSubmit={handleSignUp}
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <TextField
+              size="small"
+              value={signUpUsername}
+              label="Please type your username here"
+              onChange={(e) => {
+                setSignUpUsername(e.target.value);
+              }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 3,
+                "& .MuiInputBase-root": {
+                  width: "100%",
+                },
+              }}
+            />
+            <IconButton
+              onClick={handleCloseSignUp}
+              style={{ position: "absolute", right: 8, top: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Button style={{ marginLeft: "auto" }} type="submit">
+              Sign Up
             </Button>
           </form>
         </DialogContent>
