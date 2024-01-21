@@ -13,13 +13,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import type { DialogProps } from "@mui/material";
+import SelectCategory from "./SelectCategory";
 
 const PostNewBar: React.FC<{ handleCreate: Function }> = ({ handleCreate }) => {
-  const [post, setPost] = useState("");
   const [open, setOpen] = useState(false);
 
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
+  const [category, setCategory] = useState("Select a category");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -30,7 +31,7 @@ const PostNewBar: React.FC<{ handleCreate: Function }> = ({ handleCreate }) => {
   };
 
   const ultimateHandleCreate = () => {
-    handleCreate(title, details);
+    handleCreate(title, details, category);
     setTitle("");
     setDetails("");
     setOpen(false);
@@ -96,6 +97,7 @@ const PostNewBar: React.FC<{ handleCreate: Function }> = ({ handleCreate }) => {
           <DialogContentText>
             Enter the details of your new post.
           </DialogContentText>
+          <SelectCategory category={category} setCategory={setCategory} />
           <TextField
             autoFocus
             value={title}

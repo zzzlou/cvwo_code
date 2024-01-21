@@ -111,6 +111,7 @@ const TopBar = () => {
       })
       .catch((error) => console.error("Failed to sign up", error));
     setSignUpUsername("");
+    setSignUpOpen(false);
   };
 
   useEffect(() => {
@@ -157,9 +158,7 @@ const TopBar = () => {
               justifyContent: "center",
               position: "absolute",
             }}
-          >
-            <SearchBar />
-          </div>
+          ></div>
           {isLoggedIn ? (
             <LoggedinMenu
               loggedInUsername={loggedInUsername}

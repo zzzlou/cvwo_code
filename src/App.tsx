@@ -38,11 +38,14 @@ export interface singleThread {
 const App = () => {
   const [threads, setThreads] = useState<singleThread[]>([]);
   const [threadTrigger, setThreadTrigger] = useState(0); //a trigger to ensure threads sync with backend every time it's created or deleted
+  const [selectedCategory, setSelectedCategory] = useState("all");
   useEffect(() => {
-    fetch("http://127.0.0.1:3000/api/v1/posts/")
+    const categoryQuery =
+      selectedCategory !== "all" ? `?category=${selectedCategory}` : "";
+    fetch(`http://127.0.0.1:3000/api/v1/posts/${categoryQuery}`)
       .then((res) => res.json())
       .then((data) => setThreads(data));
-  }, [threadTrigger]);
+  }, [threadTrigger, selectedCategory]);
 
   const handleDelete = (postId: number) => {
     const deleteURL = `/api/v1/posts/${postId}`;
@@ -67,14 +70,13 @@ const App = () => {
       .catch((error) => console.error("Error deleting thread", error));
   };
 
-  const handleCreate = (title: string, details: string) => {
+  const handleCreate = (title: string, details: string, category: string) => {
     const createURL = `api/v1/posts/`;
 
     const postData = {
       title: title,
       details: details,
-      name: "admin",
-      category: "cat",
+      category: category,
       likes: 0,
     };
 
@@ -109,6 +111,8 @@ const App = () => {
                 threads={threads}
                 handleDelete={handleDelete}
                 handleCreate={handleCreate}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
               />
             }
           />
