@@ -31,10 +31,19 @@ const PostNewBar: React.FC<{ handleCreate: Function }> = ({ handleCreate }) => {
   };
 
   const ultimateHandleCreate = () => {
+    if (!title.trim() || !details.trim()) {
+      alert("Please fill in all the fields");
+      return;
+    }
+    if (category === "Select a category") {
+      alert("Please select a category");
+      return;
+    }
     handleCreate(title, details, category);
     setTitle("");
     setDetails("");
     setOpen(false);
+    setCategory("Select a category");
   };
   return (
     <Container

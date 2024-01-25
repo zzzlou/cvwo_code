@@ -9,4 +9,5 @@ export const categories = [
   "ask a question",
   "animals",
   "careers",
+  "others",
 ];

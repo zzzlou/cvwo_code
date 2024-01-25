@@ -26,12 +26,17 @@ const CommentPage: React.FC<{
 
   const handleComment = (e: FormEvent, newCommentContent: string) => {
     e.preventDefault();
+    if (!newCommentContent.trim()) {
+      alert("Comment cannot be empty");
+      return;
+    }
     const url = `/api/v1/posts/${thread.id}/comments/`;
     const commentData = {
       name: "admin",
       content: newCommentContent,
       likes: 0,
     };
+
     fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

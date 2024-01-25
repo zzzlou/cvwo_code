@@ -92,6 +92,10 @@ const TopBar = () => {
 
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!signUpUsername.trim()) {
+      alert("Username cannot be empty");
+      return;
+    }
     const signUpURL = `/api/v1/users`;
     const signUpData = {
       username: signUpUsername,
