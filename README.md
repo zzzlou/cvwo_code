@@ -1,4 +1,5 @@
 Name: Lou Zhanzhi A0288570R
+
 **Rails part**
 
 First make sure you have ruby on rails properly set up, this project is built on rails 7.1.2
