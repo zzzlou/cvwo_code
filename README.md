@@ -2,6 +2,8 @@ Name: Lou Zhanzhi A0288570R
 
 **Rails part**
 
+Please refer to https://github.com/zzzlou/cvwo_code_backend for Rails part.
+
 First make sure you have ruby on rails properly set up, this project is built on rails 7.1.2
 
 After downloading the file, in your terminal, cd to current folder, and run
