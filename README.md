@@ -1,4 +1,4 @@
-Name: Lou Zhanzhi A0288570R
+Name: Lou Zhanzhi
 
 **Rails part**
 
